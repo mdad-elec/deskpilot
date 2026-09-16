@@ -68,6 +68,11 @@ The wizard walks four steps:
    button that tells you how many chunks were actually indexed.
 4. **Make it yours** — name, greeting, avatar.
 
+## Try it
+
+[docs/DEMO.md](docs/DEMO.md) — a throwaway ERPNext with Deskpilot on it in about ten
+minutes, with demo data and a local model, for evaluating it without touching a real site.
+
 ## Configuration
 
 Everything lives in **Deskpilot Settings** (System Manager only). Each setting can also be pinned
