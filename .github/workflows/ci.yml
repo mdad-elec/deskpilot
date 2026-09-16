@@ -83,12 +83,13 @@ jobs:
           # `develop` is deliberately not tracked: it is an unreleased target
           # that breaks for reasons that have nothing to do with this app, and a
           # permanently red job teaches everyone to ignore the CI badge.
-          # v16 declares engines.node >=24; bench init runs `yarn install` against
-          # Frappe's own package.json, so the runner node version has to satisfy it.
+          # v16 pins Python >=3.14,<3.15 and declares engines.node >=24. bench init
+          # runs yarn install against Frappe's own package.json, so the runner has
+          # to satisfy both before install-app is reached.
           - frappe-branch: version-16
             python: "3.14"
             node: "24"
-            experimental: true
+            experimental: false
     continue-on-error: ${{ matrix.experimental }}
 
     services:

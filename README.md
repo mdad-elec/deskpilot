@@ -44,6 +44,9 @@ Closing it leaves a dormant ghost that fills in on hover, rather than vanishing 
 
 > Screenshots are redacted — see [docs/img/README.md](docs/img/README.md) for what and why.
 
+Both supported lines are installed from scratch in CI on every push — v15 on Python 3.11,
+v16 on Python 3.14 — so the version claim above is enforced rather than asserted.
+
 ## Install
 
 ```bash
