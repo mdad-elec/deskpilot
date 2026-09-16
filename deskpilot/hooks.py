@@ -2,7 +2,7 @@ app_name = "deskpilot"
 app_title = "Deskpilot"
 app_publisher = "mdad-elec"
 app_description = "In-Desk guided assistant for ERPNext — answers from live data, drives the screen, cites your SOPs."
-app_email = "61062853+mdad-elec@users.noreply.github.com"
+app_email = "mdad.alwathig@gmail.com"
 app_license = "mit"
 
 # Apps

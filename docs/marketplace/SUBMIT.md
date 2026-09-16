@@ -25,12 +25,9 @@ prepared; this is the click-path.
 5. **Create a release** of the app and **submit it for review**.
 6. **Wait.** Frappe's stated SLA is that apps are reviewed or published within 10 days.
 
-## Two things to decide before you submit
+## Before you submit
 
-**Publisher contact.** The guidelines require "valid contact information" on the publisher
-profile. `hooks.py` uses a GitHub noreply address, which is fine as app metadata but may
-not be accepted as a support contact. Decide what address you want reachable there — it is
-separate from `app_email`.
+Publisher contact is set: mdad.alwathig@gmail.com (in hooks.py and SUPPORT.md).
 
 **A demo video.** Frappe's guidelines ask for a short video showing the app in use. It is
 not listed as strictly mandatory, but this app demonstrates far better in motion than in

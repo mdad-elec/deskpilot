@@ -58,6 +58,7 @@ made a real call to your endpoint and shown you the reply.
 | Support URL | https://github.com/mdad-elec/deskpilot/blob/main/docs/SUPPORT.md |
 | Privacy Policy URL | https://github.com/mdad-elec/deskpilot/blob/main/docs/PRIVACY.md |
 | Website / Source | https://github.com/mdad-elec/deskpilot |
+| Publisher contact | mdad.alwathig@gmail.com |
 
 ## Logo
 

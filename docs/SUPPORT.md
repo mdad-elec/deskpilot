@@ -35,7 +35,14 @@ Open an issue at <https://github.com/mdad-elec/deskpilot/issues> with:
 
 Please do not paste API keys, or the contents of `site_config.json`.
 
+## Contact
+
+Issues are the fastest route, because they are searchable and other people benefit
+from the answer. If you need to reach the maintainer directly:
+**mdad.alwathig@gmail.com**
+
 ## Security
 
 For a suspected security issue, please do not open a public issue. Report it through
-GitHub's private vulnerability reporting on the repository.
+GitHub's private vulnerability reporting on the repository, or by email to the address
+above.
