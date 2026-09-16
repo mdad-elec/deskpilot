@@ -77,10 +77,12 @@ jobs:
           - frappe-branch: version-15
             python: "3.11"
             experimental: false
-          # Frappe develop is v17.0.0.dev0 and pins Python >=3.14,<3.15, so this
-          # entry has to track it. Allowed to fail: develop moves under us, and a
-          # marketplace app is judged on the stable line.
-          - frappe-branch: develop
+          # The README claims v15-v16, so v16 is what CI should be backing up.
+          # It pins Python >=3.14,<3.15, hence the separate interpreter.
+          # `develop` is deliberately not tracked: it is an unreleased target
+          # that breaks for reasons that have nothing to do with this app, and a
+          # permanently red job teaches everyone to ignore the CI badge.
+          - frappe-branch: version-16
             python: "3.14"
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
