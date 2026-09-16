@@ -1,0 +1,343 @@
+{
+ "actions": [],
+ "creation": "2026-09-16 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "model_tab",
+  "provider",
+  "api_base",
+  "api_key",
+  "model",
+  "model_cb",
+  "max_answer_tokens",
+  "max_job_seconds",
+  "disable_reasoning",
+  "streaming_disabled",
+  "vision_disabled",
+  "embeddings_tab",
+  "embed_section",
+  "embed_base",
+  "embed_model",
+  "embed_cb",
+  "embed_key",
+  "knowledge_tab",
+  "sop_source",
+  "frappe_folder",
+  "drive_section",
+  "drive_html",
+  "drive_folder_id",
+  "drive_cb",
+  "drive_connected_email",
+  "drive_refresh_token",
+  "shared_section",
+  "kb_mcp_url",
+  "kb_mcp_cb",
+  "kb_mcp_token",
+  "filters_section",
+  "blocked_topics",
+  "filters_cb",
+  "excluded_documents",
+  "appearance_tab",
+  "helper_name",
+  "greeting",
+  "appearance_cb",
+  "avatar",
+  "access_tab",
+  "required_role",
+  "session_retention_sec",
+  "access_cb",
+  "issue_assignees",
+  "setup_complete"
+ ],
+ "fields": [
+  {
+   "fieldname": "model_tab",
+   "fieldtype": "Tab Break",
+   "label": "Model"
+  },
+  {
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "label": "Provider",
+   "default": "OpenAI-compatible",
+   "options": "OpenAI-compatible\nOpenAI\nNVIDIA\nRaven Settings",
+   "description": "Where the chat model runs. 'OpenAI-compatible' covers vLLM, Ollama, llama.cpp and most hosted APIs. 'Raven Settings' reuses the LLM already configured in the Raven app, if you have it installed."
+  },
+  {
+   "fieldname": "api_base",
+   "fieldtype": "Data",
+   "label": "API base URL",
+   "depends_on": "eval:doc.provider!='Raven Settings'",
+   "description": "Must end in /v1. Leave blank to use the provider default (OpenAI: https://api.openai.com/v1, NVIDIA: https://integrate.api.nvidia.com/v1)."
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API key",
+   "depends_on": "eval:doc.provider!='Raven Settings'",
+   "description": "Local servers that ignore auth still need a non-empty value here."
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "label": "Model",
+   "depends_on": "eval:doc.provider!='Raven Settings'",
+   "description": "Blank uses the provider default (gpt-4o-mini / moonshotai/kimi-k2.6)."
+  },
+  {
+   "fieldname": "model_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "max_answer_tokens",
+   "fieldtype": "Int",
+   "label": "Max answer tokens",
+   "description": "Blank or 0 = 1100. Load-bearing: too low truncates mid-answer, and a truncated tool call is discarded entirely."
+  },
+  {
+   "fieldname": "max_job_seconds",
+   "fieldtype": "Int",
+   "label": "Max seconds per turn",
+   "description": "Blank or 0 = 150. The whole turn, not one model call."
+  },
+  {
+   "fieldname": "disable_reasoning",
+   "fieldtype": "Check",
+   "label": "Suppress reasoning traces",
+   "default": "0",
+   "description": "Sends enable_thinking=false. For models that otherwise emit their thinking into the answer."
+  },
+  {
+   "fieldname": "streaming_disabled",
+   "fieldtype": "Check",
+   "label": "Disable streaming",
+   "default": "0",
+   "description": "Answers arrive whole instead of token by token."
+  },
+  {
+   "fieldname": "vision_disabled",
+   "fieldtype": "Check",
+   "label": "Disable image understanding",
+   "default": "0",
+   "description": "Stops the assistant sending attached images to the model."
+  },
+  {
+   "fieldname": "embeddings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Embeddings"
+  },
+  {
+   "fieldname": "embed_section",
+   "fieldtype": "Section Break",
+   "label": "Knowledge base embeddings"
+  },
+  {
+   "fieldname": "embed_base",
+   "fieldtype": "Data",
+   "label": "Embedding API base URL",
+   "description": "MUST be a separate endpoint from the chat model above. Blank = http://127.0.0.1:11434/v1 (a stock local Ollama). Pointing this at a chat-only server makes every embedding fail silently."
+  },
+  {
+   "fieldname": "embed_model",
+   "fieldtype": "Data",
+   "label": "Embedding model",
+   "description": "Blank = nomic-embed-text. Changing this invalidates the stored index; re-sync your documents afterwards."
+  },
+  {
+   "fieldname": "embed_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "embed_key",
+   "fieldtype": "Password",
+   "label": "Embedding API key",
+   "description": "Blank is fine for a local Ollama."
+  },
+  {
+   "fieldname": "knowledge_tab",
+   "fieldtype": "Tab Break",
+   "label": "Knowledge"
+  },
+  {
+   "fieldname": "sop_source",
+   "fieldtype": "Select",
+   "label": "Document source",
+   "default": "Frappe Files",
+   "options": "None\nFrappe Files\nGoogle Drive",
+   "description": "Where your SOPs and process documents come from. Synced hourly."
+  },
+  {
+   "fieldname": "frappe_folder",
+   "fieldtype": "Link",
+   "label": "Frappe folder",
+   "options": "File",
+   "depends_on": "eval:doc.sop_source=='Frappe Files'",
+   "description": "Every file in this folder and its subfolders is indexed. NOTE: the knowledge base is shared \u2014 once indexed, a document is answerable to every user who can use the assistant, including private files."
+  },
+  {
+   "fieldname": "drive_section",
+   "fieldtype": "Section Break",
+   "label": "Google Drive",
+   "depends_on": "eval:doc.sop_source=='Google Drive'"
+  },
+  {
+   "fieldname": "drive_html",
+   "fieldtype": "HTML",
+   "label": "Connection"
+  },
+  {
+   "fieldname": "drive_folder_id",
+   "fieldtype": "Data",
+   "label": "Drive folder",
+   "description": "Paste the folder's ID or its full Drive URL. The folder must be shared with the connected Google account."
+  },
+  {
+   "fieldname": "drive_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "drive_connected_email",
+   "fieldtype": "Data",
+   "label": "Connected account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "drive_refresh_token",
+   "fieldtype": "Password",
+   "label": "Drive refresh token",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "shared_section",
+   "fieldtype": "Section Break",
+   "label": "Shared knowledge base (optional)",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "kb_mcp_url",
+   "fieldtype": "Data",
+   "label": "MCP endpoint URL",
+   "description": "Optional. An MCP endpoint exposing a 'kb-search' tool, queried alongside the local index. Blank = off."
+  },
+  {
+   "fieldname": "kb_mcp_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "kb_mcp_token",
+   "fieldtype": "Password",
+   "label": "MCP bearer token"
+  },
+  {
+   "fieldname": "filters_section",
+   "fieldtype": "Section Break",
+   "label": "Retrieval filters",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "blocked_topics",
+   "fieldtype": "Small Text",
+   "label": "Blocked topics",
+   "description": "One phrase per line. A chunk whose title OR body contains a phrase is never returned. Use this for material that is need-to-know: anything indexed is otherwise answerable to every user."
+  },
+  {
+   "fieldname": "filters_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "excluded_documents",
+   "fieldtype": "Small Text",
+   "label": "Excluded documents",
+   "description": "One phrase per line, matched against document titles only. Use this for large documents that match every query and crowd out real answers."
+  },
+  {
+   "fieldname": "appearance_tab",
+   "fieldtype": "Tab Break",
+   "label": "Appearance"
+  },
+  {
+   "fieldname": "helper_name",
+   "fieldtype": "Data",
+   "label": "Assistant name",
+   "description": "Blank = Deskpilot. Shown in the widget and used by the assistant to refer to itself."
+  },
+  {
+   "fieldname": "greeting",
+   "fieldtype": "Small Text",
+   "label": "Greeting",
+   "description": "First message of a new conversation. Blank = a built-in greeting."
+  },
+  {
+   "fieldname": "appearance_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "avatar",
+   "fieldtype": "Attach Image",
+   "label": "Avatar",
+   "description": "Blank = the built-in mark. Use a DARK image on a transparent background: the widget places it on a pale scrim in the light theme and inverts it in the dark theme, so a light avatar disappears in both."
+  },
+  {
+   "fieldname": "access_tab",
+   "fieldtype": "Tab Break",
+   "label": "Access"
+  },
+  {
+   "fieldname": "required_role",
+   "fieldtype": "Link",
+   "label": "Required role",
+   "options": "Role",
+   "description": "Blank means every logged-in user can use the assistant. This is enforced on the server for every endpoint, not just by hiding the widget."
+  },
+  {
+   "fieldname": "session_retention_sec",
+   "fieldtype": "Int",
+   "label": "Transcript retention (seconds)",
+   "description": "Blank or 0 = 604800 (7 days). Conversations and their uploaded files are deleted after this."
+  },
+  {
+   "fieldname": "access_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "issue_assignees",
+   "fieldtype": "Small Text",
+   "label": "Issue assignees",
+   "description": "Users who receive an Issue when someone reports a bad answer, one per line. Blank routes them to the site's System Managers."
+  },
+  {
+   "fieldname": "setup_complete",
+   "fieldtype": "Check",
+   "label": "Setup complete",
+   "hidden": 1,
+   "default": "0"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-09-16 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Deskpilot",
+ "name": "Deskpilot Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

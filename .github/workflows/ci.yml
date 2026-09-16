@@ -1,0 +1,150 @@
+name: CI
+
+# Frappe Marketplace requires a passing CI on the repository before an app is
+# approved. It is also the only place the real `bench install-app` runs — there
+# is no bench on a developer laptop, and the install path is exactly where this
+# app has broken before.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  static:
+    name: Lint, tests and gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install tooling
+        run: pip install ruff
+
+      - name: Ruff
+        run: ruff check .
+
+      - name: Byte-compile
+        run: python -m compileall -q deskpilot evals scripts tests
+
+      - name: Unit tests (hermetic — no bench, no site)
+        run: python -m unittest discover -s tests -v
+
+      - name: Every dotted reference resolves
+        # hooks.py and patches.txt are resolved by Frappe at install/migrate time.
+        # A path that does not resolve kills `bench install-app`, but only on a
+        # clean machine — which is exactly what CI is.
+        run: python scripts/check_refs.py --verbose
+
+      - name: No company branding
+        run: python scripts/check_branding.py
+
+      - name: JSON is parseable
+        run: |
+          python - <<'PY'
+          import glob, json
+          for f in glob.glob("deskpilot/**/*.json", recursive=True):
+              with open(f) as fh:
+                  doc = json.load(fh)
+              # A Workspace's `content` is itself a JSON string; a malformed one
+              # renders an empty page rather than erroring, so check it here.
+              if doc.get("doctype") == "Workspace":
+                  json.loads(doc["content"])
+              print("ok", f)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: JavaScript parses
+        run: |
+          for f in $(git ls-files '*.js'); do node --check "$f" || exit 1; done
+
+  install:
+    name: Install on Frappe ${{ matrix.frappe-branch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - frappe-branch: version-15
+            experimental: false
+          - frappe-branch: develop
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
+
+    services:
+      mariadb:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+      redis:
+        image: redis:alpine
+        ports: ["6379:6379"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: deskpilot
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: System packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libmysqlclient-dev mariadb-client redis-tools
+          npm install -g yarn
+
+      - name: Configure MariaDB for Frappe
+        run: |
+          mysql -h 127.0.0.1 -u root -proot -e "
+            SET GLOBAL character_set_server = 'utf8mb4';
+            SET GLOBAL collation_server = 'utf8mb4_unicode_ci';"
+
+      - name: Init bench
+        run: |
+          pip install frappe-bench
+          bench init --skip-redis-config-generation \
+            --frappe-branch ${{ matrix.frappe-branch }} --python "$(which python)" bench
+          cd bench
+          bench set-config -g db_host 127.0.0.1
+          bench set-config -g redis_cache redis://127.0.0.1:6379
+          bench set-config -g redis_queue redis://127.0.0.1:6379
+          bench set-config -g redis_socketio redis://127.0.0.1:6379
+
+      - name: Install the app
+        run: |
+          cd bench
+          bench get-app deskpilot "${GITHUB_WORKSPACE}/deskpilot"
+          bench new-site test.localhost \
+            --mariadb-root-password root --admin-password admin \
+            --no-mariadb-socket --install-app deskpilot
+          bench --site test.localhost migrate
+
+      - name: The app is actually usable
+        run: |
+          cd bench
+          # Unconfigured must mean provider "none" — never a hopeful request to
+          # somebody else's endpoint.
+          bench --site test.localhost execute deskpilot.config.get_llm
+          # The Settings single and its Workspace must exist after install.
+          bench --site test.localhost execute frappe.client.get_single_value \
+            --kwargs "{'doctype': 'Deskpilot Settings', 'field': 'sop_source'}"
+          # The scheduled jobs only become rows after migrate; prove they did.
+          bench --site test.localhost execute frappe.client.get_count \
+            --kwargs "{'doctype': 'Scheduled Job Type', 'filters': {'method': ['like', 'deskpilot%']}}"

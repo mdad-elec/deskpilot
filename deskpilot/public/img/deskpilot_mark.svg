@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Deskpilot">
+  <!-- A DARK mark on a transparent ground, on purpose. The widget CSS puts a pale
+       scrim behind it on the light theme and inverts it on the dark theme; a light
+       mark breaks both. Keep the ink dark if you replace this. -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#1f2937" stroke-width="3"/>
+  <polygon points="8,32 32,25 56,32 32,39" fill="#1f2937" opacity=".45"/>
+  <polygon points="32,8 39,32 32,56 25,32" fill="#1f2937"/>
+  <circle cx="32" cy="32" r="3.5" fill="#ffffff"/>
+</svg>

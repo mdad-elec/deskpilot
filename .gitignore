@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.env
+.env.*
+*.pem
+*.key
+*.crt
+node_modules/
+dist/
+build/
+*.egg-info/
+
+# Local KB ingest inputs — source documents fed to kb.ingest_dir(), not app code.
+kb_src/
+
+secrets/
+
+# Telemetry pulled off a site for reporting. NEVER commit: copilot_telemetry.jsonl
+# carries real user identities and the verbatim questions they typed.
+*telemetry*.jsonl

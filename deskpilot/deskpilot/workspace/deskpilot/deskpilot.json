@@ -1,0 +1,46 @@
+{
+ "charts": [],
+ "content": "[{\"id\": \"dpHeader\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Deskpilot</b></span>\", \"col\": 12}}, {\"id\": \"dpShortcut1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Deskpilot Settings\", \"col\": 4}}, {\"id\": \"dpShortcut2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Run setup wizard\", \"col\": 4}}]",
+ "creation": "2026-09-16 00:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "tool",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Deskpilot",
+ "links": [],
+ "modified": "2026-09-16 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Deskpilot",
+ "name": "Deskpilot",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 99.0,
+ "shortcuts": [
+  {
+   "doc_view": "",
+   "label": "Deskpilot Settings",
+   "link_to": "Deskpilot Settings",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Run setup wizard",
+   "type": "URL",
+   "url": "/app/deskpilot-settings?setup=1"
+  }
+ ],
+ "title": "Deskpilot"
+}
