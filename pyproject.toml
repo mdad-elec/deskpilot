@@ -4,6 +4,9 @@ authors = [
     { name = "mdad-elec", email = "61062853+mdad-elec@users.noreply.github.com"}
 ]
 description = "In-Desk guided assistant for ERPNext — answers from live data, drives the screen, cites your SOPs."
+# 3.10 is the floor for Frappe v15, the current stable line and what the
+# marketplace lists against. Frappe's develop branch (v17) pins >=3.14 — do not
+# copy that floor here, it would make this app uninstallable on every stable site.
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]

@@ -77,10 +77,11 @@ jobs:
           - frappe-branch: version-15
             python: "3.11"
             experimental: false
-          # develop tracks a newer Python than the stable line; building it on
-          # 3.11 fails inside Frappe itself, before our app is reached.
+          # Frappe develop is v17.0.0.dev0 and pins Python >=3.14,<3.15, so this
+          # entry has to track it. Allowed to fail: develop moves under us, and a
+          # marketplace app is judged on the stable line.
           - frappe-branch: develop
-            python: "3.12"
+            python: "3.14"
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
 
