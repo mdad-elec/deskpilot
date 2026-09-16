@@ -61,23 +61,36 @@ made a real call to your endpoint and shown you the reply.
 
 ## Logo
 
-`deskpilot/public/img/deskpilot_mark.svg`, exported to PNG at 512×512 (square, no text —
-both are stated requirements).
+`docs/marketplace/logo.png` — 512×512, square, no text, already generated and committed.
+Meets the stated requirements (at least 200×200, square, no words in the image).
+
+It is drawn by `scripts/render_mark.py` rather than converted from the SVG:
 
 ```bash
-# any one of these
-rsvg-convert -w 512 -h 512 deskpilot/public/img/deskpilot_mark.svg -o docs/marketplace/logo.png
-magick -background none -density 512 deskpilot/public/img/deskpilot_mark.svg -resize 512x512 docs/marketplace/logo.png
+python3 scripts/render_mark.py docs/marketplace/logo.png --size 512 --white
 ```
 
-Note the mark is dark ink on transparency. If the listing renders logos on a dark
-background, export onto a white square instead so it stays visible.
+Do **not** use `magick convert` on the SVG. ImageMagick falls back to its built-in
+renderer when librsvg is absent, and that renderer silently drops `stroke` on an
+unfilled shape — the mark's outer ring disappears and you get a logo missing a third
+of its design, with no error to tell you. `tests/test_mark.py` checks the renderer
+against the SVG so the two cannot drift.
+
+The committed logo is flattened onto white, since listings often render on a light
+card and the mark is dark ink. For a transparent version, drop `--white`.
 
 ## Screenshots
 
-**Not yet taken.** The previous ones showed a live instance and could not be published;
-see `docs/img/README.md` for the shot list. Take them on a clean site with stock demo
-data before submitting.
+In `docs/img/` — five, redacted rather than withheld. The product name is repainted
+with the current one; a naming series, a localised field label and a live record count
+are blurred; the dismissed-launcher image is regenerated from the current mark. See
+`docs/img/README.md` for the reasoning.
+
+Suggested order for the listing: `walkthrough.png` first (it is the whole pitch),
+then `grid-column.png`, `add-row.png`, `sessions.png`.
+
+Retaking them on a clean site with stock demo data would be better still — a
+screenshot with nothing to hide beats a redacted one — but these are publishable.
 
 ## Compatibility
 

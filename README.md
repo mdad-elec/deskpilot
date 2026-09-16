@@ -7,6 +7,10 @@ fills in new documents for you to save yourself, and cites your own SOPs.
 Runs against any OpenAI-compatible chat endpoint (vLLM, Ollama, llama.cpp, or a hosted API).
 No data leaves your network unless you point it at a hosted model.
 
+<p align="center">
+  <img src="docs/img/walkthrough.png" alt="A seven-step guided walkthrough on a Sales Order" width="880">
+</p>
+
 ---
 
 ## Why this exists
@@ -22,6 +26,23 @@ done so** unless the runtime stops it.
 | **Saying is not doing** | "I've highlighted the Customer field" with no action emitted is caught and corrected, not shipped. |
 | **Permissions are real** | Every call runs as the asking user, including in the background worker. Counts are permission-filtered — a user who cannot read Salary Slip cannot learn how many there are. |
 | **It cannot write** | It has no tool that writes to the database — no save, submit, amend or cancel. Asked to create something it opens the new form and fills what you gave it; *you* press Save. |
+
+## What it looks like
+
+| Guided walkthrough | Line-item precision |
+|---|---|
+| <img src="docs/img/walkthrough.png" width="420"> | <img src="docs/img/grid-column.png" width="420"> |
+| Steps are resolved against the doctype metadata server-side, so each one points at the real field — expanding collapsed sections and switching tabs as needed. | "Highlight the Quantity column" lands on the column heading *inside the child table*, not the form's Total Quantity field. |
+
+| Controls, not just fields | Conversations |
+|---|---|
+| <img src="docs/img/add-row.png" width="420"> | <img src="docs/img/sessions.png" width="260"> |
+| "Add Row" is a control, not a field — it maps to the grid's own add-row button. | Per-user sessions, titled from the first message. Resume any of them. |
+
+Closing it leaves a dormant ghost that fills in on hover, rather than vanishing with no way back:
+<img src="docs/img/ghost-fab.png" width="52" align="center">
+
+> Screenshots are redacted — see [docs/img/README.md](docs/img/README.md) for what and why.
 
 ## Install
 
