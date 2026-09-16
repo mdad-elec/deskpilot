@@ -14,6 +14,16 @@ dependencies = [
     # "frappe~=16.0.0" # Installed and managed by bench.
 ]
 
+# Frappe Cloud refuses an app that does not declare this, and bench warns on
+# get-app. One branch serves both supported lines, so the range spans them rather
+# than pinning one — tests/test_packaging.py checks it against the CI matrix, so
+# widening the claim without testing it fails the build.
+#
+# Only frappe is listed. The app installs on a plain Frappe bench with no ERPNext
+# (that is what CI installs), and naming erpnext here would narrow it for no reason.
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0,<17.0.0"
+
 [build-system]
 requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
