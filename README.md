@@ -111,4 +111,4 @@ where it is being developed and total for everyone else.
 
 ## License
 
-MIT — see [license.txt](license.txt).
+MIT — see [LICENSE](LICENSE).
