@@ -5,9 +5,14 @@ name: CI
 # is no bench on a developer laptop, and the install path is exactly where this
 # app has broken before.
 
+# Static checks run on everything: they are seconds and catch most regressions.
+# The install jobs stand up a full bench twice, which is minutes of runner time per
+# push — too expensive to spend on a docs typo. They gate pull requests and tags,
+# which is where "does it actually install" is the question being asked.
 on:
   push:
     branches: [main]
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -69,6 +74,12 @@ jobs:
 
   install:
     name: Install on Frappe ${{ matrix.frappe-branch }}
+    # Skipped on ordinary pushes to main; run it by hand from the Actions tab when
+    # you want the answer without opening a PR.
+    if: >-
+      github.event_name == 'pull_request'
+      || github.event_name == 'workflow_dispatch'
+      || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

@@ -44,8 +44,9 @@ Closing it leaves a dormant ghost that fills in on hover, rather than vanishing 
 
 > Screenshots are redacted — see [docs/img/README.md](docs/img/README.md) for what and why.
 
-Both supported lines are installed from scratch in CI on every push — v15 on Python 3.11,
-v16 on Python 3.14 — so the version claim above is enforced rather than asserted.
+Both supported lines are installed from scratch in CI — v15 on Python 3.11, v16 on
+Python 3.14 — on every pull request and every release tag, so the version claim above is
+enforced rather than asserted.
 
 ## Install
 
@@ -137,6 +138,13 @@ python3 scripts/check_branding.py
 resolve kills `bench install-app` — but only on a clean machine. On a box that still has the old
 files lying around outside git, everything keeps working, so the breakage is invisible exactly
 where it is being developed and total for everyone else.
+
+## Related
+
+[**erpnext-mcp-native**](https://github.com/mdad-elec/erpnext-mcp-native) — the same
+problem from the other side. Deskpilot puts an assistant inside the Desk, driving the
+screen for the person sitting at it. That one points ERPNext outward over MCP, so
+Claude, ChatGPT or n8n can reach the same data. They compose.
 
 ## License
 
